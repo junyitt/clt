@@ -1,0 +1,11 @@
+name: visualize_clt
+title:
+account: jycheah
+server: shinyapps.io
+appId: 172578
+bundleId: 790969
+url: https://jycheah.shinyapps.io/visualize_clt/
+when: 1492351659.13446
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: CLT.Rmd

@@ -1,0 +1,230 @@
+---
+title: "Visualizing Central Limit Theorem (CLT)"
+author: "Jun Yitt, Cheah"
+date: "April 16, 2017"
+output: html_document
+runtime: shiny
+resource_files:
+- server.R
+- ui.R
+---
+
+#Shiny Application
+This application allows user to interactively change the parameters when simulating a sample distribution and visualize the effect of Central Limit Theorem.  
+User can choose to start from a uniform or exponential random variable by selecting one of the two tabs.  
+On the top left of the main panel, user can vary the parameters of the random variable X, and a histogram of X will be plotted on the bottom left.  
+On the top right of the main panel, user can vary the parameters for the sample f(X) distribution, and a histogram of f(X) will be plotted on the bottom right.  
+*Note: Generally, function of X is "Mean", where we are interested in the sample mean. I've extended this to include "Median" and "Standard Deviation". So, the user can estimate the population median or standard deviation using these 2 extended options.
+
+
+
+```{r, echo=FALSE}
+library(shiny)
+
+shinyApp(
+      ui = fluidPage(
+  
+  # Application title
+  titlePanel("Visualize Central Limit Theorem"),
+  
+  # Sidebar with a slider input for number of bins 
+  # sidebarLayout(
+    # sidebarPanel(
+          # textInput("box1", "Enter Tab 1 Text:", value = "Tab 1!"),
+          # textInput("box2", "Enter Tab 2 Text:", value = "Tab 2!")
+
+               
+          
+          
+    
+
+
+            # sliderInput("bins",
+            #           "Number of bins:",
+            #           min = 1,
+            #           max = 100,
+            #           value = 30)
+
+    # ),
+
+    # Show a plot of the generated distribution
+    mainPanel(
+          
+       tabsetPanel(type = "tabs",     
+                   tabPanel(
+                         "Uniform Distribution", 
+                         fixedRow(
+                               column(3, numericInput("unif.a", "Parameter, a", value = 0)
+                              ),
+                              column(3,
+                               numericInput("unif.b", "Parameter, b", value = 1)
+                              ),
+                              column(6, 
+                                     selectInput("funchoice", label = "Select function of X", 
+                                                 choices = list("Mean" = 1, "Median" = 2,
+                                                                "Standard Deviation" = 3), selected = 1)
+                              )
+                         ),
+                             
+                        fixedRow( 
+                              column(2, numericInput("seed1", "Seed", value = 123)
+                              ),                        
+                              column(4,
+                              sliderInput("N",
+                                          "Sample Size:",
+                                          min = 1,
+                                          max = 100,
+                                          value = 30)
+                              ),
+                              column(6, numericInput("sim", "Number of simulations:", value = 1000))
+                              
+                        ),
+                        
+                        fixedRow(
+                              column(6,
+                                     
+                                     plotOutput("unifPlot")
+                              ),
+                              column(6,
+                                     plotOutput("unifPlot2")  
+                              )
+                        )
+                        ),
+                         
+
+                   tabPanel("Exponential Distribution",
+
+                            fixedRow(
+                                  column(5, numericInput("exp.lambda", "Parameter, lambda", value = 1)
+                                  ),
+                                  column(1,
+                                         ""
+                                  ),
+                                  column(6,
+                                         selectInput("funchoice2", label = "Select function of X",
+                                                     choices = list("Mean" = 1, "Median" = 2,
+                                                                    "Standard Deviation" = 3), selected = 1)
+                                  )
+                            ),
+
+                            fixedRow(
+                                  column(2, numericInput("seed2", "Seed", value = 123)
+                                  ),
+                                  column(4,
+                                         sliderInput("N2",
+                                                     "Sample Size:",
+                                                     min = 1,
+                                                     max = 100,
+                                                     value = 30)
+                                  ),
+                                  column(6, numericInput("sim2", "Number of simulations:", value = 1000))
+
+                            ),
+
+                            fixedRow(
+                                  column(6,
+
+                                         plotOutput("expPlot")
+                                  ),
+                                  column(6,
+                                         plotOutput("expPlot2")
+                                  )
+                            )
+                  )#tab panel2
+                  
+       )
+    )
+  ),
+  
+  server = function(input, output) {
+      output$out1 <- renderText(input$box1)
+      output$out2 <- renderText(input$box2)
+      # output$fun11 <- renderText(input$funchoice)
+#unif
+  output$unifPlot <- renderPlot({
+
+    # generate bins based on input$bins from ui.R
+      set.seed(input$seed1)
+      X <- runif(input$N, min = input$unif.a, max = input$unif.b)
+    
+      # bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    # draw the histogram with the specified number of bins
+    hist(X, breaks = 50, col = 'darkgray', border = 'white')
+
+  })
+  
+  output$unifPlot2 <- renderPlot({
+        
+        fun2 <- input$funchoice
+        # fun2 <<- list(mean, median,sd)[[input$funchoice]]
+        
+        # generate bins based on input$bins from ui.R
+        n <- input$sim
+        
+        simvar <- sapply(1:n, FUN = function(x){
+            if(fun2 == 1){
+                  mean( runif(input$N, min = input$unif.a, max = input$unif.b) )
+            }else if(fun2 == 2){
+                  median( runif(input$N, min = input$unif.a, max = input$unif.b) )
+            }else if(fun2 == 3){
+                  sd( runif(input$N, min = input$unif.a, max = input$unif.b) )
+                  
+            }
+              
+        })
+        # draw the histogram with the specified number of bins
+        hist(simvar, breaks = 50, col = 'darkgray', border = 'white', main = "Histogram of f(X)", xlab = "f(X)")
+        
+  })
+  
+  
+  output$expPlot <- renderPlot({
+        
+        # generate bins based on input$bins from ui.R
+        set.seed(input$seed2)
+        X <- rexp(input$N2, rate = input$exp.lambda)
+        
+        # bins <- seq(min(x), max(x), length.out = input$bins + 1)
+        # draw the histogram with the specified number of bins
+        hist(X, breaks = 50, col = 'darkgray', border = 'white')
+        
+  })
+  
+  output$expPlot2 <- renderPlot({
+        
+        fun2 <- input$funchoice2
+        # fun2 <<- list(mean, median,sd)[[input$funchoice]]
+        
+        # generate bins based on input$bins from ui.R
+        n <- input$sim2
+        
+        simvar <- sapply(1:n, FUN = function(x){
+              if(fun2 == 1){
+                    mean( rexp(input$N2, rate = input$exp.lambda) )
+              }else if(fun2 == 2){
+                    median( rexp(input$N2, rate = input$exp.lambda) )
+              }else if(fun2 == 3){
+                    sd( rexp(input$N2, rate = input$exp.lambda) )
+                    
+              }
+              
+        })
+        # draw the histogram with the specified number of bins
+        hist(simvar, breaks = 50, col = 'darkgray', border = 'white', main = "Histogram of f(X)", xlab = "f(X)")
+        
+  })
+  
+  
+},
+
+options = list(height = 700)
+  
+  
+  
+  
+      
+      
+) #shinyapp
+```
+
+

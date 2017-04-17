@@ -3,9 +3,9 @@ title: Central Limit Theorem
 account: jycheah
 server: shinyapps.io
 appId: 172573
-bundleId: 790973
+bundleId: 791026
 url: https://jycheah.shinyapps.io/central_limit_theorem/
-when: 1492351982.2755
+when: 1492357465.7639
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: server.R|ui.R

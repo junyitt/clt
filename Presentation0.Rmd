@@ -1,0 +1,53 @@
+---
+title: 'Presentation: Visualize CLT'
+author: "Jun Yitt, Cheah"
+date: "April 16, 2017"
+output: ioslides_presentation
+runtime: shiny
+---
+
+## Overview
+
+This presentation, together with the shiny app were developed for the Developing Data Products Course Project.
+
+The shiny app with documentation can be found here:
+<https://jycheah.shinyapps.io/central_limit_theorem/>
+
+Code for ui.R and server.R can be found here:
+<https://github.com/junyitt/clt>
+
+
+## Motivation
+Consider we want to estimate the population mean of a uniform/exponential random variable.   
+ 
+To estimate the population mean, we can carry out simulations and apply the Central Limit Theorem.
+
+## Example
+Consider the case where we want to estimate the population mean of an exponentially distributed random variable with lambda = 1.  
+   
+We could first simulate a sample of 50 random exponentials and take the mean.  
+   
+Then, we repeat this procedure 100,000 times to create the sample mean distribution.  
+  
+
+```{r}
+   samples <- sapply(1:100000, FUN = function(x){
+                  mean( rexp(50, rate = 1) )
+        })
+
+```
+
+## Histogram
+The population mean estimates should be centered around the sample mean distribution. 
+```{r, fig.height= 3, echo = F}
+hist(samples, breaks = 50, main = "Histogram of Sample Means", xlab = "Sample Means")
+abline(v = mean(samples), col = "red", cex = 1.5)
+m <- mean(samples)
+```
+Hence, the population mean is approximately `r m`. 
+  
+If you're interested to interactively simulate and visualize the effect of Central Limit Theorem, do check out my shiny app once again at:
+<https://jycheah.shinyapps.io/central_limit_theorem/>  
+Enjoy!
+
+

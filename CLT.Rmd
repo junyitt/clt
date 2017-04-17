@@ -14,7 +14,7 @@ This application allows user to interactively change the parameters when simulat
 User can choose to start from a uniform or exponential random variable by selecting one of the two tabs.  
 On the top left of the main panel, user can vary the parameters of the random variable X, and a histogram of X will be plotted on the bottom left.  
 On the top right of the main panel, user can vary the parameters for the sample f(X) distribution, and a histogram of f(X) will be plotted on the bottom right.  
-*Note: Generally, function of X is "Mean", where we are interested in the sample mean. I've extended this to include "Median" and "Standard Deviation". So, the user can estimate the population median or standard deviation using these 2 extended options.
+*Note: Generally, function of X is "Mean", where we are interested using the sample mean to estimate the population mean. I've included "Median" and "Standard Deviation" for extra experimential visualization purposes.
 
 
 
